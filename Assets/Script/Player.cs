@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -11,11 +12,13 @@ public class Player : MonoBehaviour
     
     [SerializeField] private BulletManager _bulletManager;
     private Vector3 newPos = new Vector3();
+
+    [SerializeField] private Text hpUI;
     
     // Start is called before the first frame update
     void Awake()
     {
-        
+        hpUI.text = hp.ToString();
     }
 
     // Update is called once per frame
@@ -52,7 +55,6 @@ public class Player : MonoBehaviour
 
         if (Input.GetAxis("Jump") != 0)
         {
-            Debug.Log("Shot");
             Shot();
         }
 
@@ -64,7 +66,22 @@ public class Player : MonoBehaviour
         if (mathTime >= coolDown)
         {
             mathTime = 0;
-            _bulletManager.Shot(transform.position, speed);
+            _bulletManager.Shot(transform.position, speed, gameObject.tag);
+        }
+    }
+
+    public void SetBulletManager(BulletManager bulletManager)
+    {
+        _bulletManager = bulletManager;
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag(transform.tag))
+        {
+            other.gameObject.SetActive(false);
+            hp -= 1;
+            hpUI.text = hp.ToString();
         }
     }
 }

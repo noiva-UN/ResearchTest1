@@ -55,7 +55,12 @@
   <ItemGroup>
      <Compile Include="Assets\Script\Bullet.cs" />
      <Compile Include="Assets\Script\BulletManager.cs" />
+     <Compile Include="Assets\Script\ControlMeta.cs" />
+     <Compile Include="Assets\Script\Controls.cs" />
+     <Compile Include="Assets\Script\Enemy.cs" />
+     <Compile Include="Assets\Script\EnemyControl.cs" />
      <Compile Include="Assets\Script\Player.cs" />
+     <Compile Include="Assets\Script\Turret.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>D:/GitHub/ResearchTest1/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
