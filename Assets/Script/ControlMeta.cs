@@ -8,11 +8,16 @@ public class ControlMeta : MonoBehaviour
 {
     //難易度調整用　初期値50
     [SerializeField, Range(1,100)] private int difficulty = 50;
+
+    [SerializeField] private float coolDown = 0.5f;
+    private float mathTime = 0;
     
     [SerializeField] private Player _player;
     
     private List<Controls> controls = new List<Controls>();
 
+    private VoiceTest _voiceTest;
+    
     [SerializeField] private Text diffUI;
     
     private bool setup = false;
@@ -64,12 +69,24 @@ public class ControlMeta : MonoBehaviour
         }
 
         if (!change) return;
-        foreach (var t in controls)
+
+        if (mathTime == 0)
         {
-            t.ControlDifficulty(difficulty);
+            foreach (var t in controls)
+            {
+                t.ControlDifficulty(difficulty);
+            }
         }
 
-        change = false;
+        if (mathTime >= coolDown)
+        {
+            change = false;
+            mathTime = 0;
+        }
+        
+        mathTime += Time.deltaTime;
+
+        
     }
 
     private void SetUp()
@@ -109,5 +126,22 @@ public class ControlMeta : MonoBehaviour
     public Player GetPlayer()
     {
         return _player;
+    }
+
+    public void UpDifficulty(int arg)
+    {
+        difficulty += arg;
+        change = true;
+    }
+    
+    public void DownDifficulty(int arg)
+    {
+        difficulty -= arg;
+        change = true;
+    }
+
+    public void SetVoiceTest(VoiceTest voiceTest)
+    {
+        _voiceTest = voiceTest;
     }
 }

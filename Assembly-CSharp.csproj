@@ -61,6 +61,7 @@
      <Compile Include="Assets\Script\EnemyControl.cs" />
      <Compile Include="Assets\Script\Player.cs" />
      <Compile Include="Assets\Script\Turret.cs" />
+     <Compile Include="Assets\Script\VoiceTest.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>D:/GitHub/ResearchTest1/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>

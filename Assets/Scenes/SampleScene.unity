@@ -643,6 +643,7 @@ GameObject:
   - component: {fileID: 657483303}
   - component: {fileID: 657483302}
   - component: {fileID: 657483305}
+  - component: {fileID: 657483306}
   m_Layer: 0
   m_Name: Contorol
   m_TagString: Untagged
@@ -663,6 +664,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   difficulty: 50
+  coolDown: 0.5
   _player: {fileID: 1309416880}
   diffUI: {fileID: 1303203739}
 --- !u!114 &657483303
@@ -714,6 +716,31 @@ MonoBehaviour:
   bullet: {fileID: 6716607364688249988, guid: 00d845fd2aabff044b00327fae92fd6f, type: 3}
   bulletParent: {fileID: 881896986}
   initialInstance: 5
+--- !u!114 &657483306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657483301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eeda241d08c2cf448fce77c98adda8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpKeyWords:
+  - "\u30A4\u30FC\u30B8\u30FC"
+  - "\u304B\u3093\u305F\u3093"
+  - 
+  - 
+  - 
+  DownKeyWords:
+  - "\u3080\u305A\u304B\u3057\u3044"
+  - "\u307E\u3063\u3066"
+  - "\u307E\u3066"
+  - "\u3084\u3081\u3066"
+  - 
+  _controlMeta: {fileID: 657483302}
 --- !u!1 &881896986
 GameObject:
   m_ObjectHideFlags: 0
