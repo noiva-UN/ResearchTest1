@@ -10,7 +10,7 @@ public class EnemyControl : Controls
     [SerializeField] private Transform enemyParent;
     [SerializeField] private BulletManager _bulletManager;
     
-    [SerializeField] private int popLimit = 50, coolDown = 2;
+    [SerializeField] private int popLimit = 10, coolDown = 2;
     private int pops = 0;
     private float mathTime = 0;
     

@@ -13,9 +13,15 @@
           <e p="Controls.cs" t="Include" />
           <e p="Enemy.cs" t="Include" />
           <e p="EnemyControl.cs" t="Include" />
+          <e p="KeywordController.cs" t="Include" />
+          <e p="KeywordTest1.cs" t="Include" />
+          <e p="MicSpectrumSample.cs" t="Include" />
           <e p="Player.cs" t="Include" />
+          <e p="SavWav.cs" t="Include" />
           <e p="Turret.cs" t="Include" />
-          <e p="VoiceTest.cs" t="Include" />
+          <e p="VoiceTest1.cs" t="Include" />
+          <e p="VoiceTest2.cs" t="Include" />
+          <e p="VoiceTest3.cs" t="Include" />
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />

@@ -16,13 +16,13 @@ public class ControlMeta : MonoBehaviour
     
     private List<Controls> controls = new List<Controls>();
 
-    private VoiceTest _voiceTest;
+    private VoiceTest1 _voiceTest1;
     
     [SerializeField] private Text diffUI;
     
     private bool setup = false;
 
-    private bool change = false;
+    public bool change = false;
     
     // Start is called before the first frame update
     void Awake()
@@ -43,28 +43,27 @@ public class ControlMeta : MonoBehaviour
         {
             difficulty++;
             if (difficulty > 100) difficulty = 100;
-            diffUI.text = difficulty.ToString();
             change = true;
         }else if (Input.GetKeyDown(KeyCode.X))
         {
             difficulty--;
             if (difficulty < 0) difficulty = 0;
-            diffUI.text = difficulty.ToString();
+
             change = true;
         }else if (Input.GetKeyDown(KeyCode.A))
         {
             difficulty = 0;
-            diffUI.text = difficulty.ToString();
+
             change = true;
         }else if (Input.GetKeyDown(KeyCode.S))
         {
             difficulty = 100;
-            diffUI.text = difficulty.ToString();
+
             change = true;
         }else if (Input.GetKeyDown(KeyCode.S))
         {
             difficulty = 50;
-            diffUI.text = difficulty.ToString();
+
             change = true;
         }
 
@@ -76,12 +75,15 @@ public class ControlMeta : MonoBehaviour
             {
                 t.ControlDifficulty(difficulty);
             }
+            diffUI.text = difficulty.ToString();
         }
 
         if (mathTime >= coolDown)
         {
             change = false;
+            //_voiceTest1.gameObject.SetActive(true);
             mathTime = 0;
+            return;
         }
         
         mathTime += Time.deltaTime;
@@ -128,20 +130,36 @@ public class ControlMeta : MonoBehaviour
         return _player;
     }
 
+    public void adjustmentDifficulty(int arg)
+    {
+        if (arg > 0)
+        {
+            UpDifficulty(arg);
+        }
+        else
+        {
+            DownDifficulty(-arg);
+        }
+    }
+    
     public void UpDifficulty(int arg)
     {
         difficulty += arg;
         change = true;
+        Debug.Log("Difficulty UP");
+        //_voiceTest1.gameObject.SetActive(false);
     }
     
     public void DownDifficulty(int arg)
     {
         difficulty -= arg;
         change = true;
+        Debug.Log("Difficulty Down");
+        //_voiceTest1.gameObject.SetActive(false);
     }
 
-    public void SetVoiceTest(VoiceTest voiceTest)
+    public void SetVoiceTest(VoiceTest1 voiceTest1)
     {
-        _voiceTest = voiceTest;
+        _voiceTest1 = voiceTest1;
     }
 }
