@@ -12,6 +12,7 @@ using UnityEngine;
 using LitJson;
 using TMPro;
 using UnityEngine.Networking;
+using UnityEngine.Windows;
 
 public class JsonTest : MonoBehaviour
 {
@@ -21,37 +22,31 @@ public class JsonTest : MonoBehaviour
 
     public string audioPath;
 
-    // Use this for initialization
-    IEnumerator Start()
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("apikey", apiKey);
-        form.AddField("wav", audioPath);
+    public AudioClip audio;
+    
+    private List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
 
-        var www = UnityWebRequest.Post(url, form);
-        www.SetRequestHeader("Content-type", "multipart/form-data");
+    private byte[] sample;
+    
+    // Use this for initialization
+
+    void Start()
+    {
+        //StartCoroutine(API());
+    }
+    
+    public IEnumerator API()
+    {
+        formData.Add(new MultipartFormDataSection("apikey", apiKey));
+        //formData.Add(new MultipartFormDataSection("wav", audioPath));
+        formData.Add( new MultipartFormDataSection("wav", File.ReadAllBytes(audioPath)));
+        //formData.Add(new MultipartFormFileSection("wav",); 
+
+        var www = UnityWebRequest.Post(url, formData);
+        //www.SetRequestHeader("Content-type", "multipart/form-data");
 
         yield return www.SendWebRequest();
 
         print(www.downloadHandler.text);
-
-        var xxx = new WWW(url, form);
-
-        yield return xxx;
-
-        print(xxx.text);
-
-
-        Hashtable header = new Hashtable();
-        header.Add("Content-Type", "multipart/form-data");
-        
-        byte[] postBytes = form.data;
-        
-        var yyy = new WWW(url, postBytes, header);
-
-        yield return yyy;
-
-        print(yyy.text);
-        
     }
 }

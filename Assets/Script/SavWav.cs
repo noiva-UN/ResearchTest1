@@ -12,7 +12,7 @@ public static class SavWav {
 			filename += ".wav";
 		}
 
-		var filepath = Path.Combine("D:\\GitHub\\ResearchTest1\\Assets\\Audio Clip", filename);
+		var filepath = Path.Combine("D:\\GitHub\\ResearchTest1\\Assets\\UserData", filename);
 
 		Debug.Log(filepath);
 

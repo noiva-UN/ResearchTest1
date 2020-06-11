@@ -1226,7 +1226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1143253000
 Transform:
   m_ObjectHideFlags: 0
@@ -1255,12 +1255,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   url: https://api.webempath.net/v2/analyzeWav
   apiKey: YvhIy2Chob7kDWujOQKot6_0JYX9iQWxZEtrgRyQBOg
-  audio: {fileID: 8300000, guid: 6f36925279414d74191abb6f8007a084, type: 3}
   audioPath: "D:\\GitHub\\ResearchTest1\\Assets\\UserData\\\u30E1\u30C7\u30A3\u30A21
     (online-audio-converter.com)"
-  data:
-    apikey: 
-    wav: {fileID: 8300000, guid: 6f36925279414d74191abb6f8007a084, type: 3}
+  audio: {fileID: 0}
 --- !u!1 &1303203737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,6 +1478,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1322813306}
   - component: {fileID: 1322813309}
+  - component: {fileID: 1322813310}
   - component: {fileID: 1322813308}
   - component: {fileID: 1322813307}
   m_Layer: 0
@@ -1489,7 +1487,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1322813306
 Transform:
   m_ObjectHideFlags: 0
@@ -1713,7 +1711,22 @@ MonoBehaviour:
   followingDownline: 1
   aboveUpLine: 2
   _controlMeta: {fileID: 657483302}
-  _text: {fileID: 51240207}
+--- !u!114 &1322813310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322813305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e55734ad0fd5d448702a4f989917c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  url: https://api.webempath.net/v2/analyzeWav
+  apiKey: YvhIy2Chob7kDWujOQKot6_0JYX9iQWxZEtrgRyQBOg
+  audioPath: Assets/UserData/Audio Track.wav
+  audio: {fileID: 8300000, guid: 37367537da679c94fb2eaaddb4324bd2, type: 3}
 --- !u!1 &1418398704
 GameObject:
   m_ObjectHideFlags: 0
