@@ -36,7 +36,7 @@ public class BulletManager : Controls
         {
             CreateNew();
         }
-        
+        GetReady();
     }
     
     private Bullet SearchPool()

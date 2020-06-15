@@ -1,10 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-public class MicSpectrumSample : MonoBehaviour
+//https://qiita.com/ELIXIR/items/595579a9372ef181e0bc
+
+public class MicSpectrumSample : Controls
 {
     private readonly int SampleNum = (2 << 9); // サンプリング数は2のN乗(N=5-12)
     [SerializeField, Range(0f, 1000f)] float m_gain = 200f; // 倍率
@@ -14,49 +18,108 @@ public class MicSpectrumSample : MonoBehaviour
     Vector3 m_endPos;
     float[] currentValues;
 
+    [SerializeField] private int samplingFrequency = 11025;
+
+    [SerializeField, Range(1, 4)] private int recordingSec = 1;
+
     [SerializeField] private float VolumeDeadLine, followingDownline, aboveUpLine;
 
     private int count;
 
-    [SerializeField] private ControlMeta _controlMeta;
-
-    private float volume_Max = 0, mathTime = 0;
+    private float volume_Max = 0, mathTime = 0,math=0;
 
     private JsonTest API;
+
+    private string result;
+    private string[] dest;
     
-    // Use this for initialization
-    void Start()
+    [SerializeField] private Text setText, resultText;
+    [SerializeField] private Image setImage;
+    [SerializeField] private InputField setField;
+
+    protected override void SetControl(ControlMeta meta)
     {
+        base.SetControl(meta);
+    }
+
+    public override void Initialized(int diff)
+    {
+        base.Initialized(diff);
+        setField.text = "";
+
         m_source = GetComponent<AudioSource>();
         m_lineRenderer = GetComponent<LineRenderer>();
         m_sttPos = m_lineRenderer.GetPosition(0);
         m_endPos = m_lineRenderer.GetPosition(m_lineRenderer.positionCount - 1);
         currentValues = new float[SampleNum];
-        if ((m_source != null) && (Microphone.devices.Length > 0)) // オーディオソースとマイクがある
-        {
-            if (m_source.clip == null) // クリップがなければマイクにする
-            {
-                string devName = Microphone.devices[0]; // 複数見つかってもとりあえず0番目のマイクを使用
-                Debug.Log(devName);
-                int minFreq, maxFreq;
-                Microphone.GetDeviceCaps(devName, out minFreq, out maxFreq); // 最大最小サンプリング数を得る
-                int ms = minFreq / SampleNum; // サンプリング時間を適切に取る
-                m_source.loop = true; // ループにする
-                m_source.clip = Microphone.Start(devName, true, 1, 11025); // clipをマイクに設定
-                while (!(Microphone.GetPosition(devName) > 0))
-                {
-                } // きちんと値をとるために待つ
-
-                Microphone.GetPosition(null);
-                m_source.Play();
-            }
-        }
-
-        API = GetComponent<JsonTest>();
+        StartCoroutine(SetUp());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator SetUp()
+    {
+        var length = Microphone.devices.Length;
+        if (!(m_source != null && length > 0)) // オーディオソースとマイクがある
+        {
+            Debug.LogError("AudioSourceかマイクが見つからない");
+            yield break;
+        }
+
+        var text = "Microphone List";
+        for (int i = 0; i < length; i++)
+        {
+            text += "\n" + (i + 1).ToString() + "." + Microphone.devices[i];
+        }
+
+        setText.text = text;
+
+        var devName = "";
+        var num = -1;
+
+        setField.ActivateInputField();
+
+        while (true)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (int.TryParse(setField.text, out num))
+                {
+                    if (0 <= num && num <= length)
+                    {
+                        devName = Microphone.devices[num - 1];
+                        break;
+                    }
+                    else
+                    {
+                        Debug.LogError("リストの範囲外の数字が入力されている");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("整数以外が入力されている");
+                }
+            }
+
+            yield return null;
+        }
+
+        m_source.loop = true; // ループにする
+        m_source.clip = Microphone.Start(devName, true, recordingSec, samplingFrequency * recordingSec); // clipをマイクに設定
+        while (!(Microphone.GetPosition(devName) > 0))
+        {
+        } // きちんと値をとるために待つ
+
+        Microphone.GetPosition(null);
+        m_source.Play();
+
+        API = GetComponent<JsonTest>();
+        
+        setImage.gameObject.SetActive(false);
+        setText.gameObject.SetActive(false);
+        setField.gameObject.SetActive(false);
+        GetReady();
+    }
+
+    public override void MyUpdate()
     {
         volume_Max = 0;
         m_source.GetSpectrumData(currentValues, 0, FFTWindow.Hamming);
@@ -73,25 +136,30 @@ public class MicSpectrumSample : MonoBehaviour
             }
         }
 
-        //Debug.Log("MAX ="+volume_Max);
-
         m_lineRenderer.positionCount = levelCount;
         m_lineRenderer.SetPositions(positions);
 
         if (mathTime >= 2)
         {
-            //SavWav.Save("demo", m_source.clip);
-            mathTime = 0;
-            StartCoroutine(API.API());
+            if (math >= 1)
+            {
+                StartCoroutine(Empath());
+            }
+            else
+            {
+                resultText.text = "十分な音量の音が \n 検知されませんでした";
+            }
         }
         else
         {
             mathTime += Time.deltaTime;
         }
-        
+
         if (volume_Max <= VolumeDeadLine) return;
 
-        if (_controlMeta.change) return;
+        math++;
+
+        if (commander.change) return;
 
         if (volume_Max >= aboveUpLine)
         {
@@ -106,8 +174,25 @@ public class MicSpectrumSample : MonoBehaviour
 
         if (Mathf.Abs(count) >= 5)
         {
-            _controlMeta.adjustmentDifficulty(-count);
+            commander.adjustmentDifficulty(-count);
             count = 0;
+        }
+    
+    }
+
+
+    private IEnumerator Empath()
+    {
+        SavWav.Save("demo", m_source.clip);
+        mathTime = 0;
+        math = 0;
+        yield return StartCoroutine(API.API(r => result = r));
+        print(result);
+        dest = result.Split(',');
+        resultText.text = "";
+        foreach (var text in dest)
+        {
+            resultText.text += text + "\n";
         }
     }
 }

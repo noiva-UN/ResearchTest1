@@ -19,7 +19,7 @@ public class EnemyControl : Controls
     [SerializeField] private int sideLimit;
     
     // Update is called once per frame
-    void Update()
+    public override void MyUpdate()
     {
         if (playing && pops < popLimit*difficulty/50 && coolDown * (101 - difficulty)/50 <= mathTime)
         {
@@ -50,6 +50,7 @@ public class EnemyControl : Controls
             SetNewEnemy();
         }
         
+        GetReady();
     }
 
     public override void ControlDifficulty(int diff)

@@ -11,10 +11,11 @@ public class ControlMeta : MonoBehaviour
 
     [SerializeField] private float coolDown = 0.5f;
     private float mathTime = 0;
+    private int math = 0;
     
     [SerializeField] private Player _player;
     
-    private List<Controls> controls = new List<Controls>();
+    [SerializeField] private List<Controls> controls = new List<Controls>();
 
     private VoiceTest1 _voiceTest1;
     
@@ -22,8 +23,12 @@ public class ControlMeta : MonoBehaviour
     
     private bool setup = false;
 
-    public bool change = false;
-    
+    [HideInInspector] public bool change = false;
+
+    private bool inGame = false;
+
+    public bool InGame => inGame;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -39,28 +44,47 @@ public class ControlMeta : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!inGame)
+        {
+            if (math == controls.Count)
+            {
+                inGame = true;
+            }
+
+            return;
+        }
+
+        foreach (var monos in controls)
+        {
+            monos.MyUpdate();
+        }
+        
         if (Input.GetKeyUp(KeyCode.Z))
         {
             difficulty++;
             if (difficulty > 100) difficulty = 100;
             change = true;
-        }else if (Input.GetKeyDown(KeyCode.X))
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
         {
             difficulty--;
             if (difficulty < 0) difficulty = 0;
 
             change = true;
-        }else if (Input.GetKeyDown(KeyCode.A))
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
         {
             difficulty = 0;
 
             change = true;
-        }else if (Input.GetKeyDown(KeyCode.S))
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             difficulty = 100;
 
             change = true;
-        }else if (Input.GetKeyDown(KeyCode.S))
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             difficulty = 50;
 
@@ -75,6 +99,7 @@ public class ControlMeta : MonoBehaviour
             {
                 t.ControlDifficulty(difficulty);
             }
+
             diffUI.text = difficulty.ToString();
         }
 
@@ -85,14 +110,16 @@ public class ControlMeta : MonoBehaviour
             mathTime = 0;
             return;
         }
-        
-        mathTime += Time.deltaTime;
 
-        
+        mathTime += Time.deltaTime;
     }
 
     private void SetUp()
     {
+        math = 0;
+        mathTime = 0;
+        _player.SetControlMeta(this);
+        
         controls.Clear();
         transform.SendMessage("SetControl", (this));
     }
@@ -105,6 +132,11 @@ public class ControlMeta : MonoBehaviour
         }
     }
 
+    public void GetReady()
+    {
+        math++;
+    }
+    
     public void AddControls(Controls mono)
     {
         controls.Add(mono);
@@ -117,7 +149,6 @@ public class ControlMeta : MonoBehaviour
             Debug.Log(t.name);
             if (t.name == com)
             {
-               
                 return t;
             }
         }
@@ -147,7 +178,6 @@ public class ControlMeta : MonoBehaviour
         difficulty += arg;
         change = true;
         Debug.Log("Difficulty UP");
-        //_voiceTest1.gameObject.SetActive(false);
     }
     
     public void DownDifficulty(int arg)
@@ -155,7 +185,6 @@ public class ControlMeta : MonoBehaviour
         difficulty -= arg;
         change = true;
         Debug.Log("Difficulty Down");
-        //_voiceTest1.gameObject.SetActive(false);
     }
 
     public void SetVoiceTest(VoiceTest1 voiceTest1)

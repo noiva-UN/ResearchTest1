@@ -3,6 +3,8 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
+//https://gist.github.com/darktable/2317063
+
 public static class SavWav {
 
 	const int HEADER_SIZE = 44;

@@ -26,4 +26,14 @@ public class Controls : MonoBehaviour
     {
         difficulty = diff;
     }
+
+    protected void GetReady()
+    {
+        commander.GetReady();
+    }
+
+    public virtual void MyUpdate()
+    {
+        
+    }
 }

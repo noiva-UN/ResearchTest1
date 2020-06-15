@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private Vector3 newPos = new Vector3();
 
     [SerializeField] private Text hpUI;
+
+    private ControlMeta _controlMeta;
     
     // Start is called before the first frame update
     void Awake()
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!_controlMeta.InGame) return;
         PlayerMove();
         mathTime += Time.deltaTime;
     }
@@ -74,7 +77,12 @@ public class Player : MonoBehaviour
     {
         _bulletManager = bulletManager;
     }
-    
+
+    public void SetControlMeta(ControlMeta meta)
+    {
+        _controlMeta = meta;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag(transform.tag))
