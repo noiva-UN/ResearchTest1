@@ -9,14 +9,25 @@ public static class SavWav {
 
 	const int HEADER_SIZE = 44;
 
+	private static string path;
+
+	public static string Initialized(string data)
+	{
+		path = data;
+		//Debug.Log(path);
+		//Directory.Delete(path,true);
+		//Directory.CreateDirectory(path);
+		return path;
+	}
+	
 	public static bool Save(string filename, AudioClip clip) {
 		if (!filename.ToLower().EndsWith(".wav")) {
 			filename += ".wav";
 		}
 
-		var filepath = Path.Combine("D:\\GitHub\\ResearchTest1\\Assets\\UserData", filename);
+		var filepath = Path.Combine(path, filename);
 
-		Debug.Log(filepath);
+		//Debug.Log(filepath);
 
 		// Make sure directory exists if user is saving to sub dir.
 		Directory.CreateDirectory(Path.GetDirectoryName(filepath));

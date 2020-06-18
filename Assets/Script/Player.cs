@@ -16,7 +16,13 @@ public class Player : MonoBehaviour
     [SerializeField] private Text hpUI;
 
     private ControlMeta _controlMeta;
-    
+
+    public int Hp
+    {
+        get => hp;
+        set => hp = value;
+    }
+
     // Start is called before the first frame update
     void Awake()
     {

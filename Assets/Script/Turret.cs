@@ -11,6 +11,8 @@ public class Turret : Enemy
     // Update is called once per frame
     void Update()
     {
+        if(!_enemyControl.GetCommanderInGame()) return;
+        
         if (coolDown * (101 - difficulty)/50 <= mathTime)
         {
             Shot((int) pow, _player.transform.position - transform.position);

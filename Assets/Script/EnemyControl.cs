@@ -89,4 +89,9 @@ public class EnemyControl : Controls
     {
        
     }
+
+    public bool GetCommanderInGame()
+    {
+        return commander.InGame;
+    }
 }

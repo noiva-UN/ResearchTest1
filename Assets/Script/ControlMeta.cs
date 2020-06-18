@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Internal;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ControlMeta : MonoBehaviour
@@ -18,8 +19,8 @@ public class ControlMeta : MonoBehaviour
     [SerializeField] private List<Controls> controls = new List<Controls>();
 
     private VoiceTest1 _voiceTest1;
-    
-    [SerializeField] private Text diffUI;
+
+    [SerializeField] private Text diffUI, GameOver;
     
     private bool setup = false;
 
@@ -44,6 +45,28 @@ public class ControlMeta : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_player.Hp <= 0)
+        {
+            if (inGame)
+            {
+                inGame = false;
+                GameOver.gameObject.SetActive(true);
+            }
+            else
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    SceneManager.LoadScene("Scenes/SampleScene");
+                }
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    UnityEngine.Application.Quit();   
+                }
+            }
+            return;
+        }
+        
         if (!inGame)
         {
             if (math == controls.Count)
@@ -130,6 +153,8 @@ public class ControlMeta : MonoBehaviour
         {
             monos.Initialized(difficulty);
         }
+        
+        GameOver.gameObject.SetActive(false);
     }
 
     public void GetReady()

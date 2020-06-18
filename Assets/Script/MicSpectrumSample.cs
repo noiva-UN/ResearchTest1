@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
 
 //https://qiita.com/ELIXIR/items/595579a9372ef181e0bc
@@ -24,15 +20,21 @@ public class MicSpectrumSample : Controls
 
     [SerializeField] private float VolumeDeadLine, followingDownline, aboveUpLine;
 
-    private int count;
+    private int count = 0; 
 
     private float volume_Max = 0, mathTime = 0,math=0;
 
     private JsonTest API;
 
+    [SerializeField] private bool checkAPI = false;
+    
     private string result;
     private string[] dest;
-    
+
+    public int[] feelings = new int[5];
+
+    [SerializeField] private string path;
+
     [SerializeField] private Text setText, resultText;
     [SerializeField] private Image setImage;
     [SerializeField] private InputField setField;
@@ -47,6 +49,8 @@ public class MicSpectrumSample : Controls
         base.Initialized(diff);
         setField.text = "";
 
+        path = SavWav.Initialized(path);
+        
         m_source = GetComponent<AudioSource>();
         m_lineRenderer = GetComponent<LineRenderer>();
         m_sttPos = m_lineRenderer.GetPosition(0);
@@ -103,7 +107,7 @@ public class MicSpectrumSample : Controls
         }
 
         m_source.loop = true; // ループにする
-        m_source.clip = Microphone.Start(devName, true, recordingSec, samplingFrequency * recordingSec); // clipをマイクに設定
+        m_source.clip = Microphone.Start(devName, true, recordingSec, samplingFrequency); // clipをマイクに設定
         while (!(Microphone.GetPosition(devName) > 0))
         {
         } // きちんと値をとるために待つ
@@ -139,7 +143,9 @@ public class MicSpectrumSample : Controls
         m_lineRenderer.positionCount = levelCount;
         m_lineRenderer.SetPositions(positions);
 
-        if (mathTime >= 2)
+        if(!checkAPI) return;
+        
+        if (mathTime >= recordingSec)
         {
             if (math >= 1)
             {
@@ -158,7 +164,7 @@ public class MicSpectrumSample : Controls
         if (volume_Max <= VolumeDeadLine) return;
 
         math++;
-
+/*
         if (commander.change) return;
 
         if (volume_Max >= aboveUpLine)
@@ -176,23 +182,44 @@ public class MicSpectrumSample : Controls
         {
             commander.adjustmentDifficulty(-count);
             count = 0;
-        }
+        }*/
     
     }
 
 
     private IEnumerator Empath()
     {
-        SavWav.Save("demo", m_source.clip);
+        var name = "demo" + count + ".wav";
+        SavWav.Save(name, m_source.clip);
+        count++;
         mathTime = 0;
         math = 0;
-        yield return StartCoroutine(API.API(r => result = r));
+        yield return StartCoroutine(API.API(path + "/" + name ,r => result = r));
         print(result);
+        result = result.Remove(result.Length - 2);
         dest = result.Split(',');
         resultText.text = "";
+
+        for (int i = 1; i < dest.Length; i++)
+        {
+            resultText.text += dest[i] + "\n";
+            feelings[i - 1] = int.Parse(dest[i].Split(':')[1]);
+        }
+        
         foreach (var text in dest)
         {
             resultText.text += text + "\n";
+        }
+
+        if (feelings[2] >= 25 || feelings[4] >= 25)
+        {
+            
+        }else if (feelings[0] >= 25)
+        {
+            commander.adjustmentDifficulty(2);
+        }else if (feelings[1] >= 25 || feelings[3] >= 25)
+        {
+            commander.adjustmentDifficulty(-2);
         }
     }
 }
