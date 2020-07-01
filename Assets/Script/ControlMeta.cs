@@ -10,8 +10,8 @@ public class ControlMeta : MonoBehaviour
     //難易度調整用　初期値50
     [SerializeField, Range(1,100)] private int difficulty = 50;
 
-    [SerializeField] private float coolDown = 0.5f;
-    private float mathTime = 0;
+    [SerializeField] private float coolDown = 0.5f, timeLimit = 60f;
+    private float mathTime = 0, time = 0;
     private int math = 0;
     
     [SerializeField] private Player _player;
@@ -20,7 +20,10 @@ public class ControlMeta : MonoBehaviour
 
     private VoiceTest1 _voiceTest1;
 
-    [SerializeField] private Text diffUI, GameOver;
+    [SerializeField] private Text diffUI, GameOver, lastDiff,timeUI;
+    [SerializeField] private Image setImage;
+
+    private int adCount = 0, diCount = 0;
     
     private bool setup = false;
 
@@ -51,6 +54,13 @@ public class ControlMeta : MonoBehaviour
             {
                 inGame = false;
                 GameOver.gameObject.SetActive(true);
+                GameOver.text = "GameOver";
+                GameOver.color = Color.red;
+                
+                lastDiff.gameObject.SetActive(true);
+                lastDiff.text = "難易度変更："+(adCount+diCount).ToString() + "  加算："+adCount+"回  減算："+diCount+"回";
+                
+                setImage.gameObject.SetActive(true);
             }
             else
             {
@@ -72,10 +82,26 @@ public class ControlMeta : MonoBehaviour
             if (math == controls.Count)
             {
                 inGame = true;
+                setImage.gameObject.SetActive(false);
             }
 
             return;
         }
+
+        if (time >= timeLimit)
+        {
+            GameOver.gameObject.SetActive(true);
+            GameOver.text = "Success";
+            GameOver.color=Color.green;
+            
+            lastDiff.gameObject.SetActive(true);
+            lastDiff.text = "難易度変更："+(adCount+diCount).ToString() + "  加算："+adCount+"回  減算："+diCount+"回";
+            
+            setImage.gameObject.SetActive(true);
+        }
+
+        timeUI.text = "残り　" + (int)(timeLimit - time) + "秒";
+        time += Time.deltaTime;
 
         foreach (var monos in controls)
         {
@@ -149,12 +175,18 @@ public class ControlMeta : MonoBehaviour
 
     private void Initialized()
     {
+        setImage.gameObject.SetActive(true);
         foreach (var monos in controls)
         {
             monos.Initialized(difficulty);
         }
         
+        lastDiff.gameObject.SetActive(false);
         GameOver.gameObject.SetActive(false);
+        time = 0;
+        timeUI.text = "残り　" + (int)(timeLimit - time) + "秒";
+        adCount = 0;
+        diCount = 0;
     }
 
     public void GetReady()
@@ -202,6 +234,7 @@ public class ControlMeta : MonoBehaviour
     {
         difficulty += arg;
         change = true;
+        adCount++;
         Debug.Log("Difficulty UP");
     }
     
@@ -209,6 +242,7 @@ public class ControlMeta : MonoBehaviour
     {
         difficulty -= arg;
         change = true;
+        diCount++;
         Debug.Log("Difficulty Down");
     }
 

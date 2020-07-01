@@ -20,7 +20,7 @@ public class MicSpectrumSample : Controls
 
     [SerializeField] private float VolumeDeadLine, followingDownline, aboveUpLine;
 
-    private int count = 0; 
+    private int count = 0;
 
     private float volume_Max = 0, mathTime = 0,math=0;
 
@@ -36,7 +36,6 @@ public class MicSpectrumSample : Controls
     [SerializeField] private string path;
 
     [SerializeField] private Text setText, resultText;
-    [SerializeField] private Image setImage;
     [SerializeField] private InputField setField;
 
     protected override void SetControl(ControlMeta meta)
@@ -61,6 +60,7 @@ public class MicSpectrumSample : Controls
 
     private IEnumerator SetUp()
     {
+        
         var length = Microphone.devices.Length;
         if (!(m_source != null && length > 0)) // オーディオソースとマイクがある
         {
@@ -117,7 +117,6 @@ public class MicSpectrumSample : Controls
 
         API = GetComponent<JsonTest>();
         
-        setImage.gameObject.SetActive(false);
         setText.gameObject.SetActive(false);
         setField.gameObject.SetActive(false);
         GetReady();
@@ -150,6 +149,7 @@ public class MicSpectrumSample : Controls
             if (math >= 1)
             {
                 StartCoroutine(Empath());
+
             }
             else
             {
