@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
         var horizon = Input.GetAxis("Horizontal");
         if (Mathf.Abs(horizon) >= 0.1)
         {
-            newPos.x += horizon;
+            newPos.x += horizon*0.3f;
             if (Mathf.Abs(newPos.x) >= sideLimit)
             {
                 newPos.x = Mathf.Sign(newPos.x) * sideLimit;
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         var vertical = Input.GetAxis("Vertical");
         if (Mathf.Abs((vertical)) >= 0.1)
         {
-            newPos.y += vertical;
+            newPos.y += vertical*0.3f;
             if (Mathf.Abs(newPos.y) >= hightLimit)
             {
                 newPos.y = Mathf.Sign(newPos.y) * hightLimit;

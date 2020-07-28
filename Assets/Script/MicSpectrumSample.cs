@@ -213,12 +213,14 @@ public class MicSpectrumSample : Controls
 
         if (feelings[2] >= 25 || feelings[4] >= 25)
         {
-            
+            //喜びか元気度が25以上　適性値かな？ってことで変化なし
         }else if (feelings[0] >= 25)
         {
+            //平常度が25以上だとEZってことで難易度上げる
             commander.adjustmentDifficulty(2);
         }else if (feelings[1] >= 25 || feelings[3] >= 25)
         {
+            //怒りか悲しみが25以上だと難易度下げる
             commander.adjustmentDifficulty(-2);
         }
     }

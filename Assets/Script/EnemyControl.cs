@@ -21,7 +21,7 @@ public class EnemyControl : Controls
     // Update is called once per frame
     public override void MyUpdate()
     {
-        if (playing && pops < popLimit*difficulty/50 && coolDown * (101 - difficulty)/50 <= mathTime)
+        if (playing && pops < popLimit*difficulty/50 && coolDown * (101f - (float)difficulty)/50f <= mathTime)
         {
             PopEnemy();
             mathTime = 0;

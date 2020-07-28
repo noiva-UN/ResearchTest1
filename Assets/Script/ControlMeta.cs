@@ -103,11 +103,14 @@ public class ControlMeta : MonoBehaviour
         timeUI.text = "残り　" + (int)(timeLimit - time) + "秒";
         time += Time.deltaTime;
 
-        foreach (var monos in controls)
+        if (inGame)
         {
-            monos.MyUpdate();
+            foreach (var monos in controls)
+            {
+                monos.MyUpdate();
+            }
         }
-        
+
         if (Input.GetKeyUp(KeyCode.Z))
         {
             difficulty++;
