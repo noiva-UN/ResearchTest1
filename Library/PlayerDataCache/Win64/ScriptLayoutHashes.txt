@@ -1,6 +1,6 @@
 Win64
 PlayerPath?
-C:/Users/かず/Desktop/大学/研究/demo/ResearchTest1.exe
+C:/Users/かず/Desktop/大学/研究/demo1/ResearchTest1.exe
 SceneListBegin?
 Assets/Scenes/SampleScene.unity
 SceneListEnd?

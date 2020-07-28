@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,8 @@ public class MicSpectrumSample : Controls
     private float volume_Max = 0, mathTime = 0,math=0;
 
     private JsonTest API;
-
+    
+    
     [SerializeField] private bool checkAPI = false;
     
     private string result;
@@ -55,6 +57,9 @@ public class MicSpectrumSample : Controls
         m_sttPos = m_lineRenderer.GetPosition(0);
         m_endPos = m_lineRenderer.GetPosition(m_lineRenderer.positionCount - 1);
         currentValues = new float[SampleNum];
+
+
+        
         StartCoroutine(SetUp());
     }
 
@@ -148,12 +153,17 @@ public class MicSpectrumSample : Controls
         {
             if (math >= 1)
             {
+                
                 StartCoroutine(Empath());
 
             }
             else
             {
                 resultText.text = "十分な音量の音が \n 検知されませんでした";
+                
+                StreamWriter sw = new StreamWriter(path + "/LogData.txt", true);
+                sw.WriteLine("音量不足");
+                sw.Close();
             }
         }
         else
@@ -196,6 +206,11 @@ public class MicSpectrumSample : Controls
         math = 0;
         yield return StartCoroutine(API.API(path + "/" + name ,r => result = r));
         print(result);
+        
+        StreamWriter sw = new StreamWriter(path + "/LogData.txt", true);
+        sw.WriteLine(result);
+        sw.Close();
+        
         result = result.Remove(result.Length - 2);
         dest = result.Split(',');
         resultText.text = "";

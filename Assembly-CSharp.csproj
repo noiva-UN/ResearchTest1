@@ -71,6 +71,7 @@
      <Compile Include="Assets\Script\VoiceTest1.cs" />
      <Compile Include="Assets\Script\VoiceTest2.cs" />
      <Compile Include="Assets\Script\VoiceTest3.cs" />
+     <None Include="Assets\UserData\LogData.txt" />
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>D:/GitHub/ResearchTest1/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>

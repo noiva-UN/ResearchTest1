@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Internal;
 using UnityEngine.SceneManagement;
@@ -23,7 +24,7 @@ public class ControlMeta : MonoBehaviour
     [SerializeField] private Text diffUI, GameOver, lastDiff,timeUI;
     [SerializeField] private Image setImage;
 
-    private int adCount = 0, diCount = 0;
+    private int adCount = 0, diCount = 0, unCount = 0;
     
     private bool setup = false;
 
@@ -40,7 +41,7 @@ public class ControlMeta : MonoBehaviour
         if (!setup)
         {
             SetUp();
-            setup = true;
+            //setup = true;
         }
         Initialized();
     }
@@ -48,9 +49,26 @@ public class ControlMeta : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_player.Hp <= 0)
+        if (!setup)
         {
-            if (inGame)
+            if (math == controls.Count)
+            {
+                setup= true;
+                inGame = true;
+                setImage.gameObject.SetActive(false);
+            }
+
+            return;
+        }
+        
+        if (inGame)
+        {
+            foreach (var monos in controls)
+            {
+                monos.MyUpdate();
+            }
+            
+            if (_player.Hp <= 0)
             {
                 inGame = false;
                 GameOver.gameObject.SetActive(true);
@@ -61,56 +79,46 @@ public class ControlMeta : MonoBehaviour
                 lastDiff.text = "難易度変更："+(adCount+diCount).ToString() + "  加算："+adCount+"回  減算："+diCount+"回";
                 
                 setImage.gameObject.SetActive(true);
+
+                var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
+
+                WriteLog("Assets/UserData/LogData.txt", str);
+            }
+            
+            if (time >= timeLimit)
+            {
+                GameOver.gameObject.SetActive(true);
+                GameOver.text = "Success";
+                GameOver.color=Color.green;
+            
+                lastDiff.gameObject.SetActive(true);
+                lastDiff.text = "難易度変更："+(adCount+diCount).ToString() + "  加算："+adCount+"回  減算："+diCount+"回";
+            
+                setImage.gameObject.SetActive(true);
+            
+                var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
+
+                WriteLog("Assets/UserData/LogData.txt", str);
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    SceneManager.LoadScene("Scenes/SampleScene");
-                }
-
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    UnityEngine.Application.Quit();   
-                }
+                timeUI.text = "残り　" + (int) (timeLimit - time) + "秒";
+                time += Time.deltaTime;
             }
-            return;
         }
-        
-        if (!inGame)
+        else
         {
-            if (math == controls.Count)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                inGame = true;
-                setImage.gameObject.SetActive(false);
+                SceneManager.LoadScene("Scenes/SampleScene");
             }
 
-            return;
-        }
-
-        if (time >= timeLimit)
-        {
-            GameOver.gameObject.SetActive(true);
-            GameOver.text = "Success";
-            GameOver.color=Color.green;
-            
-            lastDiff.gameObject.SetActive(true);
-            lastDiff.text = "難易度変更："+(adCount+diCount).ToString() + "  加算："+adCount+"回  減算："+diCount+"回";
-            
-            setImage.gameObject.SetActive(true);
-        }
-
-        timeUI.text = "残り　" + (int)(timeLimit - time) + "秒";
-        time += Time.deltaTime;
-
-        if (inGame)
-        {
-            foreach (var monos in controls)
+            if (Input.GetKeyDown(KeyCode.Return))
             {
-                monos.MyUpdate();
-            }
+                UnityEngine.Application.Quit();   
+            } 
         }
-
+  /* テスト用      
         if (Input.GetKeyUp(KeyCode.Z))
         {
             difficulty++;
@@ -142,7 +150,7 @@ public class ControlMeta : MonoBehaviour
 
             change = true;
         }
-
+*/
         if (!change) return;
 
         if (mathTime == 0)
@@ -178,6 +186,19 @@ public class ControlMeta : MonoBehaviour
 
     private void Initialized()
     {
+        StreamWriter sw;
+        if (!File.Exists("Assets/UserData/LogData.txt"))
+        {
+            sw = File.CreateText("Assets/UserData/LogData.txt");
+        }
+        else
+        {
+            sw = new StreamWriter("Assets/UserData/LogData.txt", true);
+        }
+
+        sw.WriteLine("開始");
+        sw.Close();
+        
         setImage.gameObject.SetActive(true);
         foreach (var monos in controls)
         {
@@ -190,6 +211,7 @@ public class ControlMeta : MonoBehaviour
         timeUI.text = "残り　" + (int)(timeLimit - time) + "秒";
         adCount = 0;
         diCount = 0;
+        unCount = 0;
     }
 
     public void GetReady()
@@ -232,13 +254,17 @@ public class ControlMeta : MonoBehaviour
             DownDifficulty(-arg);
         }
     }
+
+    public void UnChangedDiff()
+    {
+        unCount++;
+    }
     
     public void UpDifficulty(int arg)
     {
         difficulty += arg;
         change = true;
         adCount++;
-        Debug.Log("Difficulty UP");
     }
     
     public void DownDifficulty(int arg)
@@ -246,11 +272,18 @@ public class ControlMeta : MonoBehaviour
         difficulty -= arg;
         change = true;
         diCount++;
-        Debug.Log("Difficulty Down");
     }
 
     public void SetVoiceTest(VoiceTest1 voiceTest1)
     {
         _voiceTest1 = voiceTest1;
+    }
+
+    private void WriteLog(string path, string text)
+    {
+        StreamWriter sw = new StreamWriter(path,true);
+        sw.WriteLine(text);     
+        sw.Flush();
+        sw.Close();
     }
 }
