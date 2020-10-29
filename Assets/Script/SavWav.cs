@@ -14,7 +14,11 @@ public static class SavWav {
 	public static string Initialized(string data)
 	{
 		path = data;
-		Directory.Delete(path,true);
+        if (File.Exists(path))
+        {
+            Directory.Delete(path, true);
+        }
+
 		Directory.CreateDirectory(path);
 		return path;
 	}

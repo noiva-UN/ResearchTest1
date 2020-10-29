@@ -19,8 +19,6 @@ public class ControlMeta : MonoBehaviour
     
     [SerializeField] private List<Controls> controls = new List<Controls>();
 
-    private VoiceTest1 _voiceTest1;
-
     [SerializeField] private Text diffUI, GameOver, lastDiff,timeUI;
     [SerializeField] private Image setImage;
 
@@ -82,7 +80,7 @@ public class ControlMeta : MonoBehaviour
 
                 var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
 
-                WriteLog("Assets/UserData/LogData.txt", str);
+                WriteLog("Assets/LogData.txt", str);
             }
             
             if (time >= timeLimit)
@@ -98,7 +96,7 @@ public class ControlMeta : MonoBehaviour
             
                 var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
 
-                WriteLog("Assets/UserData/LogData.txt", str);
+                WriteLog("Assets/LogData.txt", str);
             }
             else
             {
@@ -187,13 +185,13 @@ public class ControlMeta : MonoBehaviour
     private void Initialized()
     {
         StreamWriter sw;
-        if (!File.Exists("Assets/UserData/LogData.txt"))
+        if (!File.Exists("Assets/LogData.txt"))
         {
-            sw = File.CreateText("Assets/UserData/LogData.txt");
+            sw = File.CreateText("Assets/LogData.txt");
         }
         else
         {
-            sw = new StreamWriter("Assets/UserData/LogData.txt", true);
+            sw = new StreamWriter("Assets/LogData.txt", true);
         }
 
         sw.WriteLine("開始");
@@ -272,11 +270,6 @@ public class ControlMeta : MonoBehaviour
         difficulty -= arg;
         change = true;
         diCount++;
-    }
-
-    public void SetVoiceTest(VoiceTest1 voiceTest1)
-    {
-        _voiceTest1 = voiceTest1;
     }
 
     private void WriteLog(string path, string text)

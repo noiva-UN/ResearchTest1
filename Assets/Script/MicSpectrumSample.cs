@@ -161,7 +161,7 @@ public class MicSpectrumSample : Controls
             {
                 resultText.text = "十分な音量の音が \n 検知されませんでした";
                 
-                StreamWriter sw = new StreamWriter(path + "/LogData.txt", true);
+                StreamWriter sw = new StreamWriter("Assets/LogData.txt", true);
                 sw.WriteLine("音量不足");
                 sw.Close();
             }
@@ -207,7 +207,7 @@ public class MicSpectrumSample : Controls
         yield return StartCoroutine(API.API(path + "/" + name ,r => result = r));
         print(result);
         
-        StreamWriter sw = new StreamWriter(path + "/LogData.txt", true);
+        StreamWriter sw = new StreamWriter("Assets/LogData.txt", true);
         sw.WriteLine(result);
         sw.Close();
         
