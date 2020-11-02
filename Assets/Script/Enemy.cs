@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,11 +9,13 @@ public class Enemy : MonoBehaviour
     protected Player _player;
     protected BulletManager _bulletManager;
     
-    [SerializeField] protected double default_hp = 10, default_pow = 1;
+    [SerializeField] protected double default_hp = 1, default_pow = 1;
 
     protected int difficulty = 50;
-    protected double hp = 1, pow = 1, speed = 1;
+    protected double hp = 1, pow = 1, speed = 2;
 
+    public bool inGame = false;
+    
     protected Rigidbody rb;
     public void SetUp(EnemyControl control,Player player, BulletManager bulletManager)
     {
@@ -22,13 +25,14 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public virtual void  Initialized(int diff, Vector3 pos)
+    public virtual void  Initialized(int diff, Vector3 pos, bool ingame)
     {
         gameObject.SetActive(true);
-        hp = (int) (default_hp * ((float)diff / 50f));
+        hp = Mathf.Max((int)default_hp, (int)(default_hp * (diff / 25f)-1));
         pow = default_pow;
         transform.position = pos;
         difficulty = diff;
+        inGame = ingame;
     }
 
     protected void LifeCheck()

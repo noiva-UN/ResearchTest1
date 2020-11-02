@@ -32,6 +32,11 @@ public class Controls : MonoBehaviour
         commander.GetReady();
     }
 
+    public virtual void CountDown()
+    {
+        
+    }
+
     public virtual void MyUpdate()
     {
         

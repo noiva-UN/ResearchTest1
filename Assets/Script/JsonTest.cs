@@ -18,7 +18,7 @@ public class JsonTest : MonoBehaviour
         Debug.Log(wavPath);
         formData.Clear();
         formData.Add(new MultipartFormDataSection("apikey", apiKey));
-        formData.Add( new MultipartFormDataSection("wav", File.ReadAllBytes(wavPath)));
+        formData.Add( new MultipartFormDataSection("wav", File.ReadAllBytes(Application.dataPath+"/"+ wavPath)));
 
         var www = UnityWebRequest.Post(url, formData);
         //www.SetRequestHeader("Content-type", "multipart/form-data");

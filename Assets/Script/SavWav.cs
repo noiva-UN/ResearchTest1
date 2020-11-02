@@ -13,13 +13,12 @@ public static class SavWav {
 
 	public static string Initialized(string data)
 	{
-		path = data;
+		path = Application.dataPath+"/"+ data;
         if (File.Exists(path))
         {
             Directory.Delete(path, true);
         }
-
-		Directory.CreateDirectory(path);
+        Directory.CreateDirectory(path);
 		return path;
 	}
 	

@@ -129,6 +129,13 @@ public class MicSpectrumSample : Controls
 
     public override void MyUpdate()
     {
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            m_gain += 10;
+        }else if(Input.GetKeyDown(KeyCode.S))
+        {
+            m_gain -= 10;
+        }
         volume_Max = 0;
         m_source.GetSpectrumData(currentValues, 0, FFTWindow.Hamming);
         int levelCount = currentValues.Length / 8; // 高周波数帯は取らない
@@ -161,7 +168,7 @@ public class MicSpectrumSample : Controls
             {
                 resultText.text = "十分な音量の音が \n 検知されませんでした";
                 
-                StreamWriter sw = new StreamWriter("Assets/LogData.txt", true);
+                StreamWriter sw = new StreamWriter(Application.dataPath+ "/LogData.txt", true);
                 sw.WriteLine("音量不足");
                 sw.Close();
             }
@@ -207,7 +214,7 @@ public class MicSpectrumSample : Controls
         yield return StartCoroutine(API.API(path + "/" + name ,r => result = r));
         print(result);
         
-        StreamWriter sw = new StreamWriter("Assets/LogData.txt", true);
+        StreamWriter sw = new StreamWriter(Application.dataPath+ "/LogData.txt", true);
         sw.WriteLine(result);
         sw.Close();
         

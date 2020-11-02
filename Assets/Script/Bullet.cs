@@ -11,6 +11,10 @@ public class Bullet : MonoBehaviour
     [SerializeField] private Vector2 deleteLine;
 
     private BulletManager _bulletManager;
+
+    private int pow = 10;
+    public int Pow => pow;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -37,8 +41,11 @@ public class Bullet : MonoBehaviour
         transform.position = homePos;
         _rigidbody.velocity = Vector3.up * speed;
         
-        if(gameObject.CompareTag(tag)) return;
+        //if(gameObject.CompareTag(tag)) return;
+        
         gameObject.tag = tag;
+        gameObject.GetComponent<Renderer>().material.color = tag == "Player" ? Color.blue : Color.red;
+
     }
     
     public void Initialize(Vector3 homePos, float speed, Vector3 vec, string tag)
@@ -46,8 +53,10 @@ public class Bullet : MonoBehaviour
         transform.position = homePos;
         _rigidbody.velocity = vec * speed;
         
-        if(gameObject.CompareTag(tag)) return;
+        //if(gameObject.CompareTag(tag)) return;
         gameObject.tag = tag;
+        
+        gameObject.GetComponent<Renderer>().material.color = tag == "Player" ? Color.blue : Color.red;
     }
     
 }

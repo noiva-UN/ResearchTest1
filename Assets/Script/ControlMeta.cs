@@ -11,7 +11,7 @@ public class ControlMeta : MonoBehaviour
     //難易度調整用　初期値50
     [SerializeField, Range(1,100)] private int difficulty = 50;
 
-    [SerializeField] private float coolDown = 0.5f, timeLimit = 60f;
+    [SerializeField] private float coolDown = 0.5f, timeLimit = 60f, CountDown = 3f;
     private float mathTime = 0, time = 0;
     private int math = 0;
     
@@ -19,7 +19,7 @@ public class ControlMeta : MonoBehaviour
     
     [SerializeField] private List<Controls> controls = new List<Controls>();
 
-    [SerializeField] private Text diffUI, GameOver, lastDiff,timeUI;
+    [SerializeField] private Text diffUI, GameOver, lastDiff, timeUI, countUI;
     [SerializeField] private Image setImage;
 
     private int adCount = 0, diCount = 0, unCount = 0;
@@ -51,9 +51,25 @@ public class ControlMeta : MonoBehaviour
         {
             if (math == controls.Count)
             {
-                setup= true;
-                inGame = true;
-                setImage.gameObject.SetActive(false);
+                countUI.gameObject.SetActive(true);
+                countUI.text = CountDown.ToString();
+                if (CountDown <= mathTime)
+                {
+                    setup= true;
+                    inGame = true;
+                    setImage.gameObject.SetActive(false);
+                    countUI.gameObject.SetActive(false);
+                }
+                else
+                {
+                    foreach (var monos in controls)
+                    {
+                        monos.CountDown();
+                    }
+
+                    mathTime += Time.deltaTime;
+                    countUI.text = (CountDown - (int) mathTime).ToString();
+                }
             }
 
             return;
@@ -78,13 +94,14 @@ public class ControlMeta : MonoBehaviour
                 
                 setImage.gameObject.SetActive(true);
 
-                var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
+                var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount+"\n 最終難易度" + difficulty;
 
-                WriteLog("Assets/LogData.txt", str);
+                WriteLog(Application.dataPath + "/LogData.txt", str);
             }
             
             if (time >= timeLimit)
             {
+                inGame = false;
                 GameOver.gameObject.SetActive(true);
                 GameOver.text = "Success";
                 GameOver.color=Color.green;
@@ -94,9 +111,9 @@ public class ControlMeta : MonoBehaviour
             
                 setImage.gameObject.SetActive(true);
             
-                var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
+                var str = "Success \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
 
-                WriteLog("Assets/LogData.txt", str);
+                WriteLog(Application.dataPath+ "Assets/LogData.txt", str);
             }
             else
             {
@@ -142,7 +159,7 @@ public class ControlMeta : MonoBehaviour
 
             change = true;
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
             difficulty = 50;
 
@@ -185,19 +202,20 @@ public class ControlMeta : MonoBehaviour
     private void Initialized()
     {
         StreamWriter sw;
-        if (!File.Exists("Assets/LogData.txt"))
+        if (!File.Exists(Application.dataPath+"/LogData.txt"))
         {
-            sw = File.CreateText("Assets/LogData.txt");
+            sw = File.CreateText(Application.dataPath+"/LogData.txt");
         }
         else
         {
-            sw = new StreamWriter("Assets/LogData.txt", true);
+            sw = new StreamWriter(Application.dataPath+"/LogData.txt", true);
         }
 
         sw.WriteLine("開始");
         sw.Close();
         
         setImage.gameObject.SetActive(true);
+        countUI.gameObject.SetActive(false);
         foreach (var monos in controls)
         {
             monos.Initialized(difficulty);

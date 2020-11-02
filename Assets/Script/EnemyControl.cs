@@ -13,15 +13,30 @@ public class EnemyControl : Controls
     [SerializeField] private int popLimit = 10, coolDown = 2;
     private int pops = 0;
     private float mathTime = 0;
-    
-    private bool playing = true;
+
+    public bool countDown = false;
 
     [SerializeField] private int sideLimit;
-    
+
+    public override void CountDown()
+    {
+        base.CountDown();
+        if (pops < popLimit / 50 && (coolDown - 1) * (101f - (float) difficulty) / 50f <= mathTime)
+        {
+            PopEnemy();
+            mathTime = 0;
+        }
+        else
+        {
+            mathTime += Time.deltaTime;
+        }
+    }
+
     // Update is called once per frame
     public override void MyUpdate()
     {
-        if (playing && pops < popLimit*difficulty/50 && coolDown * (101f - (float)difficulty)/50f <= mathTime)
+        if (countDown) countDown = false;
+        if (pops < popLimit*difficulty/50 && coolDown * (101f - (float)difficulty)/50f <= mathTime)
         {
             PopEnemy();
             mathTime = 0;
@@ -49,7 +64,8 @@ public class EnemyControl : Controls
         {
             SetNewEnemy();
         }
-        
+
+        countDown = true;
         GetReady();
     }
 
@@ -68,12 +84,12 @@ public class EnemyControl : Controls
         {
             if (!enemys[i].gameObject.active)
             {
-                enemys[i].Initialized(difficulty, new Vector3(Random.Range(-sideLimit, sideLimit), 25, 0));
+                enemys[i].Initialized(difficulty, new Vector3(Random.Range(-sideLimit, sideLimit), 25, 0),GetCommanderInGame());
                 return;
             }
             
         }
-        SetNewEnemy().Initialized(difficulty, new Vector3(Random.Range(-sideLimit, sideLimit), 25, 0));
+        SetNewEnemy().Initialized(difficulty, new Vector3(Random.Range(-sideLimit, sideLimit), 25, 0),GetCommanderInGame());
     }
     
     private Enemy SetNewEnemy()

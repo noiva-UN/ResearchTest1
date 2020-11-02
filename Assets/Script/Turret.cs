@@ -11,11 +11,15 @@ public class Turret : Enemy
     // Update is called once per frame
     void Update()
     {
-        if(!_enemyControl.GetCommanderInGame()) return;
+        if (!_enemyControl.GetCommanderInGame())
+        {
+            mathTime = coolDown * (101 - difficulty) / 50;
+            return;
+        }
         
         if (coolDown * (101 - difficulty)/50 <= mathTime)
         {
-            Shot((int) pow, _player.transform.position - transform.position);
+            Shot((int) pow, (_player.transform.position - transform.position).normalized);
             mathTime = 0;
         }
         else
@@ -26,9 +30,9 @@ public class Turret : Enemy
         LifeCheck();
     }
 
-    public override void Initialized(int diff, Vector3 pos)
+    public override void Initialized(int diff, Vector3 pos,bool ingame)
     {
-        base.Initialized(diff, pos);
+        base.Initialized(diff, pos,ingame);
 
         rb.velocity = Vector3.down * (float)speed;
         mathTime = 0;
@@ -37,14 +41,14 @@ public class Turret : Enemy
     private void Shot(int pow, Vector3 vec)
     {
 
-        _bulletManager.Shot(transform.position, (float) speed * difficulty / 50, vec, "Enemy");
+        _bulletManager.Shot(transform.position, (float) speed * difficulty / 5, vec, "Enemy");
     }
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag(transform.tag))
         {
             other.gameObject.SetActive(false);
-            hp = 0;
+            hp = -1;
         }
     }
 }
