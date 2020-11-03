@@ -1223,7 +1223,7 @@ MonoBehaviour:
   aboveUpLine: 2
   checkAPI: 1
   feelings: 0000000000000000000000000000000000000000
-  path: Assets/UserData
+  path: UserData
   setText: {fileID: 51240207}
   resultText: {fileID: 867210513}
   setField: {fileID: 888157644}

@@ -27,7 +27,7 @@ public static class SavWav {
 			filename += ".wav";
 		}
 
-		var filepath = Path.Combine(path, filename);
+		var filepath = path + "/" + filename;
 
 		//Debug.Log(filepath);
 
