@@ -105,9 +105,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f2fcd976d224748b85af272cc8da5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  default_hp: 2
+  default_hp: 1
   default_pow: 1
-  coolDown: 5
+  inGame: 0
+  coolDown: 2
 --- !u!54 &1567328567
 Rigidbody:
   m_ObjectHideFlags: 0
