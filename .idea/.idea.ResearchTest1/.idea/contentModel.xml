@@ -6,7 +6,9 @@
     <e p="D:\GitHub\ResearchTest1" t="IncludeRecursive">
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="LogData.txt" t="Include" />
         <e p="Script" t="Include">
+          <e p="AcousticAnalysis.cs" t="Include" />
           <e p="API.cs" t="Include" />
           <e p="Bullet.cs" t="Include" />
           <e p="BulletManager.cs" t="Include" />
@@ -16,18 +18,10 @@
           <e p="Enemy.cs" t="Include" />
           <e p="EnemyControl.cs" t="Include" />
           <e p="JsonTest.cs" t="Include" />
-          <e p="KeywordController.cs" t="Include" />
-          <e p="KeywordTest1.cs" t="Include" />
           <e p="MicSpectrumSample.cs" t="Include" />
           <e p="Player.cs" t="Include" />
           <e p="SavWav.cs" t="Include" />
           <e p="Turret.cs" t="Include" />
-          <e p="VoiceTest1.cs" t="Include" />
-          <e p="VoiceTest2.cs" t="Include" />
-          <e p="VoiceTest3.cs" t="Include" />
-        </e>
-        <e p="UserData" t="Include">
-          <e p="LogData.txt" t="Include" />
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />

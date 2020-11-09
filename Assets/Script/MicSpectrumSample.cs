@@ -10,10 +10,10 @@ public class MicSpectrumSample : Controls
     private readonly int SampleNum = (2 << 9); // サンプリング数は2のN乗(N=5-12)
     [SerializeField, Range(0f, 1000f)] float m_gain = 200f; // 倍率
     AudioSource m_source;
-    LineRenderer m_lineRenderer;
+    [SerializeField]private LineRenderer m_lineRenderer;
     Vector3 m_sttPos;
     Vector3 m_endPos;
-    float[] currentValues;
+    private float[] currentValues;
 
     [SerializeField] private int samplingFrequency = 11025;
 
@@ -40,6 +40,8 @@ public class MicSpectrumSample : Controls
     [SerializeField] private Text setText, resultText;
     [SerializeField] private InputField setField;
 
+    [SerializeField] private AcousticAnalysis _analysis;
+    
     protected override void SetControl(ControlMeta meta)
     {
         base.SetControl(meta);
@@ -53,7 +55,7 @@ public class MicSpectrumSample : Controls
         path = SavWav.Initialized(path);
         
         m_source = GetComponent<AudioSource>();
-        m_lineRenderer = GetComponent<LineRenderer>();
+        //m_lineRenderer = gameObject.GetComponent<LineRenderer>();
         m_sttPos = m_lineRenderer.GetPosition(0);
         m_endPos = m_lineRenderer.GetPosition(m_lineRenderer.positionCount - 1);
         currentValues = new float[SampleNum];
@@ -138,7 +140,13 @@ public class MicSpectrumSample : Controls
         }
         volume_Max = 0;
         m_source.GetSpectrumData(currentValues, 0, FFTWindow.Hamming);
+
+
+        
+
+        
         int levelCount = currentValues.Length / 8; // 高周波数帯は取らない
+        ;
         Vector3[] positions = new Vector3[levelCount];
         for (int i = 0; i < levelCount; i++)
         {
@@ -149,11 +157,17 @@ public class MicSpectrumSample : Controls
             {
                 volume_Max = positions[i].y;
             }
+
         }
+
 
         m_lineRenderer.positionCount = levelCount;
         m_lineRenderer.SetPositions(positions);
 
+        _analysis.Analysis(currentValues,samplingFrequency);
+        
+
+        
         if(!checkAPI) return;
         
         if (mathTime >= recordingSec)
