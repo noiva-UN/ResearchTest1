@@ -39,7 +39,7 @@ public class AcousticAnalysis : MonoBehaviour
         
         for (int i = 0; i < currentValues.Length; i++)
         {
-            currentValues[i] = (1000 / Mathf.Log(1000 / frequency + 1)) * Mathf.Log(Mathf.Abs(currentValues[i]) / frequency + 1);
+            currentValues[i] = (1000 / Mathf.Log(1000 / frequency + 1)) * Mathf.Log(currentValues[i] / frequency + 1);
         }
 
         
