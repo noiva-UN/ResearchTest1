@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Numerics;
+using MathNet.Numerics;
+using MathNet.Numerics.IntegralTransforms;
 using UnityEngine;
 
 
@@ -13,10 +18,13 @@ public class AcousticAnalysis : MonoBehaviour
     
     [SerializeField, Range(0f, 1000f)] float gain = 200f;
     [SerializeField] private LineRenderer mLineRenderer;
-    private Vector3 m_sttPos;
-    private Vector3 m_endPos;
+    private UnityEngine.Vector3 m_sttPos;
+    private UnityEngine.Vector3 m_endPos;
 
-    private Vector3[] points;
+    private UnityEngine.Vector3[] points;
+
+
+    private Complex[] complex;
     
     private void Awake()
     {
@@ -28,34 +36,41 @@ public class AcousticAnalysis : MonoBehaviour
 
     public void Analysis(float[] values,float frequency)
     {
-        currentValues = values;    
-        
+        currentValues = values;
+
         //メル変換 (https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%AB%E5%B0%BA%E5%BA%A6)
         //周波数パラメータが何のことかわからんからとりあえずサンプリング周波数を入れる
 
-        frequency = 700;
-
-
-        
+        //frequency = 700;
         for (int i = 0; i < currentValues.Length; i++)
         {
             currentValues[i] = (1000 / Mathf.Log(1000 / frequency + 1)) * Mathf.Log(currentValues[i] / frequency + 1);
         }
 
-        
+
+        complex = new Complex[currentValues.Length];
+        for (int i = 0; i < complex.Length; i++)
+        {
+            complex[i] = new Complex((double)currentValues[i], 0.0);
+        }
+        Fourier.Inverse(complex);
+
+        int size = (int)(Mathf.Log10(frequency) / Mathf.Log10(2));
+
         int length = currentValues.Length / 8;
         //MicSpectrumSampleに合わせる
         
-        points=new Vector3[length];
+        points=new UnityEngine.Vector3[length];
         for (int i = 0; i < length; i++)
         {
             points[i] = m_sttPos + (m_endPos - m_sttPos) * (float) i / (float) (length - 1);
-            points[i].y += currentValues[i] * gain;
+            points[i].y += (float)complex[i].Real * gain;
 
         }
-
         mLineRenderer.positionCount = length;
         mLineRenderer.SetPositions(points);
 
     }
+
+   
 }
