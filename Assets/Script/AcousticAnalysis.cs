@@ -42,22 +42,23 @@ public class AcousticAnalysis : MonoBehaviour
         //周波数パラメータが何のことかわからんからとりあえずサンプリング周波数を入れる
 
         //frequency = 700;
-        for (int i = 0; i < currentValues.Length; i++)
+       /* for (int i = 0; i < currentValues.Length; i++)
         {
             currentValues[i] = (1000 / Mathf.Log(1000 / frequency + 1)) * Mathf.Log(currentValues[i] / frequency + 1);
-        }
+        }*/
 
 
         complex = new Complex[currentValues.Length];
         for (int i = 0; i < complex.Length; i++)
         {
-            complex[i] = new Complex((double)currentValues[i], 0.0);
+            complex[i] = new Complex(Mathf.Abs(currentValues[i]), 0.0);
         }
-        Fourier.Inverse(complex);
+        Fourier.Inverse(complex);    //iFFT
+        //Fourier.Forward(complex);
+        
+       // int size = (int)(Mathf.Log10(frequency) / Mathf.Log10(2));
 
-        int size = (int)(Mathf.Log10(frequency) / Mathf.Log10(2));
-
-        int length = currentValues.Length / 8;
+        int length = currentValues.Length/* / 8*/;
         //MicSpectrumSampleに合わせる
         
         points=new UnityEngine.Vector3[length];

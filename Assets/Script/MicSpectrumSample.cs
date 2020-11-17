@@ -145,7 +145,7 @@ public class MicSpectrumSample : Controls
         
 
         
-        int levelCount = currentValues.Length / 8; // 高周波数帯は取らない
+        int levelCount = currentValues.Length/* / 8*/; // 高周波数帯は取らない
         ;
         Vector3[] positions = new Vector3[levelCount];
         for (int i = 0; i < levelCount; i++)
