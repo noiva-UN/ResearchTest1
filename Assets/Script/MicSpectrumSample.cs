@@ -165,13 +165,23 @@ public class MicSpectrumSample : Controls
         m_lineRenderer.SetPositions(positions);
 
         _analysis.Analysis(currentValues,samplingFrequency);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            var name = "demo" + count + ".wav";
+            SavWav.Save(name, m_source.clip);
+            count++;
+        }
         
 
-        
+
         if(!checkAPI) return;
+
+
         
         if (mathTime >= recordingSec)
         {
+            /*
             if (math >= 1)
             {
                 
@@ -185,7 +195,8 @@ public class MicSpectrumSample : Controls
                 StreamWriter sw = new StreamWriter(Application.dataPath+ "/LogData.txt", true);
                 sw.WriteLine("音量不足");
                 sw.Close();
-            }
+            }*/
+
         }
         else
         {
