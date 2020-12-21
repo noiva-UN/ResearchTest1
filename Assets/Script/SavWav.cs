@@ -13,11 +13,8 @@ public static class SavWav {
 
 	public static string Initialized(string data)
 	{
-		path = Application.dataPath+"/"+ data;
-        if (File.Exists(path))
-        {
-            Directory.Delete(path, true);
-        }
+		path = Application.dataPath+"/"+ data + "/"+ DateTime.Now.ToString("HH_mm_ss");
+
         Directory.CreateDirectory(path);
 		return path;
 	}

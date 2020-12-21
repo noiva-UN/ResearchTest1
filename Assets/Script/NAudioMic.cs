@@ -8,16 +8,23 @@ using System;
 
 public class NAudioMic :  Controls
 {
+    [SerializeField] private float dataPauseSec = 0.1f, recSec = 1f;
+    [SerializeField] private int sampleRate = 11025;
 
-
+    AudioSource m_source;
+    private float[] currentValues;
 
     [SerializeField] private float VolumeDeadLine, followingDownline, aboveUpLine;
 
     private int count = 0;
 
-    private float volume_Max = 0, mathTime = 0, math = 0;
+    private float mathTime = 0, math = 0;
 
 
+    [SerializeField] private LineRenderer m_lineRenderer;
+    Vector3 m_sttPos;
+    Vector3 m_endPos;
+    [SerializeField, Range(0f, 1000f)] float m_gain = 200f; // 倍率
 
     [SerializeField] private string path;
 
@@ -45,9 +52,14 @@ public class NAudioMic :  Controls
 
         path = SavWav.Initialized(path);
 
+        m_source = GetComponent<AudioSource>();
+        currentValues = new float[2<<9];
 
+        m_sttPos = m_lineRenderer.GetPosition(0);
+        m_endPos = m_lineRenderer.GetPosition(m_lineRenderer.positionCount - 1);
 
-
+        mathTime = -1f;
+        math = 0f;
 
         StartCoroutine(SetUp());
     }
@@ -56,7 +68,7 @@ public class NAudioMic :  Controls
     {
 
         var length = Microphone.devices.Length;
-        if (!( length > 0)) // オーディオソースとマイクがある
+        if (!(m_source != null && length > 0)) // オーディオソースとマイクがある
         {
             Debug.LogError("マイクが見つからない");
             yield break;
@@ -101,8 +113,50 @@ public class NAudioMic :  Controls
             yield return null;
         }
 
-        setText.gameObject.SetActive(false);
+
+        m_source.loop = true; // ループにする
+        m_source.clip = Microphone.Start(DevName, true, 1, sampleRate); // clipをマイクに設定
+        while (!(Microphone.GetPosition(DevName) > 0))
+        {
+        } // きちんと値をとるために待つ
+
+        Microphone.GetPosition(null);
+        m_source.Play();
+
         setField.gameObject.SetActive(false);
+
+        mathTime = -1;
+        setText.text = "1秒以上適当に発言してください";
+
+        while (true)
+        {
+            if (SpeakCheck())
+            {
+                if (mathTime < 0)
+                {
+                    StartRec(this, path + "/demo" + count + ".wav");
+                    mathTime = 0;
+                }
+                else
+                {
+                    mathTime += Time.deltaTime;
+                }
+            }
+            else
+            {
+                if (0 < mathTime)
+                {
+                    StopRec(this, path + "/demo" + count + ".wav");
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+        count++;
+        mathTime = -1;
+        setText.gameObject.SetActive(false);
+
         GetReady();
     }
 
@@ -111,26 +165,30 @@ public class NAudioMic :  Controls
 
     public override void MyUpdate()
     {
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(recSec <= mathTime)
         {
-            StartRec(path + "/demo" + count + ".wav");
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            StopRec(path + "/demo" + count + ".wav");
+            StopRec(this, path + "/demo" + count + ".wav");
             count++;
+            mathTime = -1;
+        }else if(mathTime < 0)
+        {
+            if (SpeakCheck())
+            {
+                StartRec(this, path + "/demo" + count + ".wav");
+                mathTime = 0;
+            }
         }
-        
+        else
+        {
+            mathTime += Time.deltaTime;
+        }
     }
 
-
-    private void StartRec(string filepath)
+    private void StartRec(object sender, string filepath)
     {
         inEvent = new WaveInEvent();
         inEvent.DeviceNumber = DevNum;
-        inEvent.WaveFormat = new WaveFormat(44100, WaveInEvent.GetCapabilities(DevNum).Channels);
+        inEvent.WaveFormat = new WaveFormat(sampleRate, WaveInEvent.GetCapabilities(DevNum).Channels);
 
         fileWriter = new WaveFileWriter(filepath, inEvent.WaveFormat);
 
@@ -142,21 +200,74 @@ public class NAudioMic :  Controls
         inEvent.RecordingStopped += (_, __) =>
         {
             fileWriter.Flush();
+
+            inEvent.Dispose();
+            inEvent = null;
+
+            fileWriter.Close();
+            fileWriter = null;
+            Debug.Log("RecEnd : " + filepath);
+
+            //GetWave(filepath);
+
+
         };
-
         inEvent.StartRecording();
-
+        Debug.Log("RecStart : " + filepath);
     }
 
-    private void StopRec(string filepath)
+    private void StopRec(object sender, string filepath)
     {
-        inEvent?.StopRecording();
-        inEvent?.Dispose();
-        inEvent = null;
 
-        fileWriter?.Close();
-        fileWriter = null;
+        inEvent.StopRecording();
 
     }
 
+    private bool SpeakCheck()
+    {
+        float volume_Max = 0f;
+        m_source.GetSpectrumData(currentValues, 0, FFTWindow.Hamming);
+
+        for (int i = 0; i < currentValues.Length; i++)
+        {
+            if (volume_Max <= currentValues[i])
+            {
+                volume_Max = currentValues[i];
+            }
+        }
+
+        if (volume_Max*100f <= VolumeDeadLine)
+        {
+            return false;
+        }
+        else
+        {
+            Debug.Log(volume_Max*100f);
+            return true;
+        }
+    }
+
+    private void GetWave(string filepath)
+    {
+        WaveFileReader reader = new WaveFileReader(filepath);
+
+        float[] samples = new float[reader.Length / reader.BlockAlign];
+
+
+        var level = samples.Length;
+        Vector3[] positions = new Vector3[level];
+
+        for (int i = 0; i < level; i++)
+        {
+            float[] sample = reader.ReadNextSampleFrame();
+
+            samples[i] = sample[0];
+
+            positions[i] = m_sttPos + (m_endPos - m_sttPos) * (float)i / (float)(level - 1);
+            positions[i].y += samples[i] * m_gain;
+        }
+        m_lineRenderer.positionCount = level;
+        m_lineRenderer.SetPositions(positions);
+        Debug.Log("ViewEnd : " + filepath);
+    }
 }

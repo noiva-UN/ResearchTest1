@@ -1053,7 +1053,7 @@ GameObject:
   - component: {fileID: 657483302}
   - component: {fileID: 657483303}
   - component: {fileID: 657483305}
-  - component: {fileID: 657483309}
+  - component: {fileID: 657483310}
   - component: {fileID: 657483308}
   - component: {fileID: 657483307}
   - component: {fileID: 657483306}
@@ -1345,7 +1345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   url: https://api.webempath.net/v2/analyzeWav
   apiKey: YvhIy2Chob7kDWujOQKot6_0JYX9iQWxZEtrgRyQBOg
---- !u!114 &657483309
+--- !u!114 &657483310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1354,23 +1354,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 657483301}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 985a462c2d7e08d42ba5cd9cd9267844, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a9923aacd4c4764ea11fa3ba6e410c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_gain: 100
-  m_lineRenderer: {fileID: 657483306}
-  samplingFrequency: 11025
-  recordingSec: 1
-  VolumeDeadLine: 0.5
+  dataPauseSec: 1
+  recSec: 1
+  sampleRate: 11025
+  VolumeDeadLine: 1
   followingDownline: 1
   aboveUpLine: 2
-  checkAPI: 1
-  feelings: 0000000000000000000000000000000000000000
+  m_lineRenderer: {fileID: 657483306}
+  m_gain: 1
   path: UserData
   setText: {fileID: 51240207}
   resultText: {fileID: 867210513}
   setField: {fileID: 888157644}
-  _analysis: {fileID: 115940218}
 --- !u!1 &675532678
 GameObject:
   m_ObjectHideFlags: 0
