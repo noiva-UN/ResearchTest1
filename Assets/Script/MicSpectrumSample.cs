@@ -140,17 +140,12 @@ public class MicSpectrumSample : Controls
         }
         volume_Max = 0;
         m_source.GetSpectrumData(currentValues, 0, FFTWindow.Hamming);
-
-
-        
-
         
         int levelCount = currentValues.Length/* / 8*/; // 高周波数帯は取らない
         ;
         Vector3[] positions = new Vector3[levelCount];
         for (int i = 0; i < levelCount; i++)
         {
-
             positions[i] = m_sttPos + (m_endPos - m_sttPos) * (float) i / (float) (levelCount - 1);
             positions[i].y += currentValues[i] * m_gain;
             if (volume_Max <= positions[i].y)
@@ -164,7 +159,7 @@ public class MicSpectrumSample : Controls
         m_lineRenderer.positionCount = levelCount;
         m_lineRenderer.SetPositions(positions);
 
-        _analysis.Analysis(currentValues,samplingFrequency);
+        _analysis.MelAnalysis(currentValues,samplingFrequency);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {

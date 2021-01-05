@@ -6,7 +6,7 @@ using NAudio;
 using NAudio.Wave;
 using System;
 
-public class NAudioMic :  Controls
+public class NAudioMicControls :  Controls
 {
     [SerializeField] private float dataPauseSec = 0.1f, recSec = 1f;
     [SerializeField] private int sampleRate = 11025;
@@ -37,6 +37,9 @@ public class NAudioMic :  Controls
 
     private string DevName;
     private int DevNum;
+
+    [SerializeField] private AcousticAnalysis acousticAnalysis;
+    [SerializeField] private int numOfDivisions = 10;
 
 
     protected override void SetControl(ControlMeta meta)
@@ -169,7 +172,7 @@ public class NAudioMic :  Controls
         {
             StopRec(this, path + "/demo" + count + ".wav");
             count++;
-            mathTime = -1;
+            mathTime = -1.2f;
         }else if(mathTime < 0)
         {
             if (SpeakCheck())
@@ -206,14 +209,25 @@ public class NAudioMic :  Controls
 
             fileWriter.Close();
             fileWriter = null;
+
+            StartCoroutine(Adjustment(filepath));
+
             Debug.Log("RecEnd : " + filepath);
 
             //GetWave(filepath);
-
-
         };
         inEvent.StartRecording();
         Debug.Log("RecStart : " + filepath);
+    }
+
+    private IEnumerator Adjustment(string filepath)
+    {
+        int diff = 0;
+        yield return StartCoroutine(acousticAnalysis.CheckAdjustment(filepath, numOfDivisions, r => diff = r));
+        if (diff != 0)
+        {
+            commander.adjustmentDifficulty(diff);
+        }
     }
 
     private void StopRec(object sender, string filepath)
@@ -242,7 +256,7 @@ public class NAudioMic :  Controls
         }
         else
         {
-            Debug.Log(volume_Max*100f);
+            //Debug.Log(volume_Max*100f);
             return true;
         }
     }

@@ -537,6 +537,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gain: 100
   mLineRenderer: {fileID: 115940217}
+  addDiffFrequency: 0.1
+  addDiffPower: 0.1
+  divisions: 10
 --- !u!1 &152786057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,6 +1057,7 @@ GameObject:
   - component: {fileID: 657483303}
   - component: {fileID: 657483305}
   - component: {fileID: 657483310}
+  - component: {fileID: 657483309}
   - component: {fileID: 657483308}
   - component: {fileID: 657483307}
   - component: {fileID: 657483306}
@@ -1345,6 +1349,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   url: https://api.webempath.net/v2/analyzeWav
   apiKey: YvhIy2Chob7kDWujOQKot6_0JYX9iQWxZEtrgRyQBOg
+--- !u!114 &657483309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657483301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e7ca09c51f3eb4f9c06438e9f45320, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gain: 200
+  mLineRenderer: {fileID: 657483306}
+  addDiffFrequency: 0.1
+  addDiffPower: 0.1
+  divisions: 10
 --- !u!114 &657483310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1369,6 +1390,8 @@ MonoBehaviour:
   setText: {fileID: 51240207}
   resultText: {fileID: 867210513}
   setField: {fileID: 888157644}
+  acousticAnalysis: {fileID: 657483309}
+  numOfDivisions: 10
 --- !u!1 &675532678
 GameObject:
   m_ObjectHideFlags: 0
