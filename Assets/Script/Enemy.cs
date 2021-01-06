@@ -28,7 +28,8 @@ public class Enemy : MonoBehaviour
     public virtual void  Initialized(int diff, Vector3 pos, bool ingame)
     {
         gameObject.SetActive(true);
-        hp = Mathf.Max((int)default_hp, (int)(default_hp * (diff / 25f)-1));
+        hp = 2;
+        //hp = Mathf.Max((int)default_hp, (int)(default_hp * (diff / 25f)-1));
         pow = default_pow;
         transform.position = pos;
         difficulty = diff;

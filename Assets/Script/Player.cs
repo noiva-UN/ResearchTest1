@@ -66,8 +66,6 @@ public class Player : MonoBehaviour
         {
             Shot();
         }
-
-
     }
 
     private void Shot()
@@ -93,7 +91,11 @@ public class Player : MonoBehaviour
     {
         if (!other.CompareTag(transform.tag))
         {
-            other.gameObject.SetActive(false);
+            if (other.GetComponent<Enemy>() == null)
+            {
+                other.gameObject.SetActive(false);
+            }
+
             hp -= 1;
             hpUI.text = hp.ToString();
         }

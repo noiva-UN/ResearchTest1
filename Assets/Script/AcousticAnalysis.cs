@@ -5,6 +5,7 @@ using NAudio.Wave;
 using NAudio.Dsp;
 using MathNet.Numerics.Statistics;
 using System.Collections;
+using System.IO;
 
 public class AcousticAnalysis : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class AcousticAnalysis : MonoBehaviour
     [SerializeField] private float addDiffFrequency = 0.1f, addDiffPower = 0.1f;
     [SerializeField] private int divisions = 10;
 
+    private int wavSampleRate;
 
     private void Awake()
     {
@@ -36,13 +38,17 @@ public class AcousticAnalysis : MonoBehaviour
         currentValues = new float[SampleNum];
     }
 
-    public IEnumerator CheckAdjustment(string filepath, int numOfDivixions, Action<int> callback)
+    public IEnumerator CheckAdjustment(string filepath, int numOfDivixions, int sampleRate, string path, Action<int> callback)
     {
-        Debug.Log("ChecckAd");
         divisions = numOfDivixions;
         var frequency = 0f;
         var power = 0f;
+
+        wavSampleRate = sampleRate;
+
         yield return StartCoroutine(Analysis(filepath, divisions, (r, s) => (frequency, power) = (r, s)));
+
+        frequency = Mathf.Log(frequency);
 
         Debug.Log("基本周波数:" + frequency + ", 短時間平均パワー:" + power);
 
@@ -50,6 +56,11 @@ public class AcousticAnalysis : MonoBehaviour
         {
             fundamentalFrequency = frequency;
             AveragePower = power;
+            wavSampleRate = sampleRate;
+
+            StreamWriter s = new StreamWriter(path + "/LogData.txt", true);
+            s.WriteLine("各基準値 基本周波数の標準偏差:" + frequency + ", 短時間平均パワーの最大値:" + power);
+            s.Close();
             yield break;
         }
 
@@ -108,6 +119,10 @@ public class AcousticAnalysis : MonoBehaviour
             }
         }
 
+        StreamWriter sw = new StreamWriter(path + "/LogData.txt", true);
+        sw.WriteLine("基本周波数の標準偏差:" + frequency + ", 短時間平均パワーの最大値:" + power + ", 難易度変化:" + adjustmentDiff);
+        sw.Close();
+
         callback(adjustmentDiff);
     }
 
@@ -154,6 +169,8 @@ public class AcousticAnalysis : MonoBehaviour
                 powMax = power[i];
             }
         }
+
+        powMax *= (float)wavSampleRate;
 
         callback(fundiv, powMax);
 

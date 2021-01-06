@@ -54,6 +54,7 @@ public class NAudioMicControls :  Controls
         setField.text = "";
 
         path = SavWav.Initialized(path);
+        commander.SetPath(path);
 
         m_source = GetComponent<AudioSource>();
         currentValues = new float[2<<9];
@@ -223,10 +224,10 @@ public class NAudioMicControls :  Controls
     private IEnumerator Adjustment(string filepath)
     {
         int diff = 0;
-        yield return StartCoroutine(acousticAnalysis.CheckAdjustment(filepath, numOfDivisions, r => diff = r));
+        yield return StartCoroutine(acousticAnalysis.CheckAdjustment(filepath, numOfDivisions, sampleRate, path, r => diff = r));
         if (diff != 0)
         {
-            commander.adjustmentDifficulty(diff);
+            commander.adjustmentDifficulty(diff * 2);
         }
     }
 

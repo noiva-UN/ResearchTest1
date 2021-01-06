@@ -47,7 +47,11 @@ public class Turret : Enemy
     {
         if (!other.CompareTag(transform.tag))
         {
-            other.gameObject.SetActive(false);
+            if (other.GetComponent<Player>() == null)
+            {
+                other.gameObject.SetActive(false);
+                
+            }
             hp = -1;
         }
     }

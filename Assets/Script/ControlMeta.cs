@@ -30,6 +30,8 @@ public class ControlMeta : MonoBehaviour
 
     private bool inGame = false;
 
+    private string path;
+
     public bool InGame => inGame;
 
     // Start is called before the first frame update
@@ -96,7 +98,7 @@ public class ControlMeta : MonoBehaviour
 
                 var str = "GameOver \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount+"\n 最終難易度" + difficulty;
 
-                WriteLog(Application.dataPath + "/LogData.txt", str);
+                WriteLog(path + "/LogData.txt", str);
             }
             
             if (time >= timeLimit)
@@ -113,7 +115,7 @@ public class ControlMeta : MonoBehaviour
             
                 var str = "Success \n 変更回数:" + (adCount + diCount + unCount) + "  加算:" + adCount + "  減算:" + diCount;
 
-                WriteLog(Application.dataPath+ "Assets/LogData.txt", str);
+                WriteLog(path + "/LogData.txt", str);
             }
             else
             {
@@ -202,13 +204,13 @@ public class ControlMeta : MonoBehaviour
     private void Initialized()
     {
         StreamWriter sw;
-        if (!File.Exists(Application.dataPath+"/LogData.txt"))
+        if (!File.Exists(path+"/LogData.txt"))
         {
-            sw = File.CreateText(Application.dataPath+"/LogData.txt");
+            sw = File.CreateText(path+"/LogData.txt");
         }
         else
         {
-            sw = new StreamWriter(Application.dataPath+"/LogData.txt", true);
+            sw = new StreamWriter(path+"/LogData.txt", true);
         }
 
         sw.WriteLine("開始");
@@ -257,6 +259,11 @@ public class ControlMeta : MonoBehaviour
     public Player GetPlayer()
     {
         return _player;
+    }
+
+    public void SetPath(string p)
+    {
+        path = p;
     }
 
     public void adjustmentDifficulty(int arg)
